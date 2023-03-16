@@ -13,7 +13,7 @@ const housingType = filterForm.querySelector('#housing-type');
 const housingPrice = filterForm.querySelector('#housing-price');
 const housingRooms = filterForm.querySelector('#housing-rooms');
 const housingGuests = filterForm.querySelector('#housing-guests');
-const housingFeatures = filterForm.querySelectorAll('.map__features :checked');
+const housingFeatures = Array.from(filterForm.querySelectorAll('.map__checkbox'));
 
 let offers = [];
 
@@ -42,14 +42,14 @@ const filteredPrice = (offer, price) => {
 
 const filteredRoom = (offer) => Number(housingRooms.value) === offer.offer.rooms || housingRooms.value === 'any';
 
-const filteredGuest = (offer) => Number(housingGuests.value) === offer.offer.guests || housingGuests.value === 'any';
+const filterGuest = (offer) => Number(housingGuests.value) === offer.offer.guests || housingGuests.value === 'any';
 
-const filteredFeatures = (offer) => {
-  if (housingFeatures.length && offer) {
-    return Array.from(housingFeatures).every((element) => offer.includes(element.value));
+const filterFeatures = (offer) => housingFeatures.every((feature) => {
+  if (feature.checked) {
+    return (offer.offer.features || []).some((value) => value === feature.value);
   }
-  return housingFeatures.length === 0;
-};
+  return true;
+});
 
 const offersFilter = () => {
   const filteredOffers = [];
@@ -58,8 +58,8 @@ const offersFilter = () => {
       filteredType(offer) &&
       filteredPrice(offer, housingPrice.value) &&
       filteredRoom(offer) &&
-      filteredGuest(offer) &&
-      filteredFeatures(offer)) {
+      filterGuest(offer) &&
+      filterFeatures(offer)) {
       filteredOffers.push(offer);
     }
     if (filteredOffers.length >= ADS_NUMBERS) {

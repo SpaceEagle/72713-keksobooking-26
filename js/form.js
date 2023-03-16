@@ -3,6 +3,7 @@ import{showSuccessMessage, showErrMessage} from './message.js';
 import {sendData, getData} from './api.js';
 import {resetMap} from './map.js';
 import {resetFilters} from './filters.js';
+import {resetPhoto} from './photo-upload.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -49,17 +50,18 @@ const houseType = formContainer.querySelector('#type');
 const timeIn = formContainer.querySelector('#timein');
 const timeOut = formContainer.querySelector('#timeout');
 const submitButton = formContainer.querySelector('.ad-form__submit');
+const resetButton = formContainer.querySelector('.ad-form__reset');
 
 const addDisabled = (status) => {
   if (!status) {
     formContainer.classList.add('ad-form--disabled');
-    filterContainer.classList.add('.map__filters--disabled');
+    filterContainer.classList.add('map__filters--disabled');
     formElemets.forEach((element) => {
       element.disabled = true;
     });
   } else {
     formContainer.classList.remove('ad-form--disabled');
-    filterContainer.classList.remove('.map__filters--disabled');
+    filterContainer.classList.remove('map__filters--disabled');
     formElemets.forEach((element) => {
       element.disabled = false;
     });
@@ -99,46 +101,6 @@ const blockSubmitButton = () => {
 const unblockSubmitButton = () => {
   submitButton.disabled = false;
   submitButton.textContent = 'Опубликовать';
-};
-
-const resetSlider = () => {
-  priceSlider.updateOptions({
-    range: {
-      min: 0,
-      max: 100000,
-    },
-    start: 0,
-    step: 1000,
-  });
-};
-
-
-const resetForm = () => {
-  formContainer.reset();
-  resetMap();
-  resetSlider();
-  resetFilters();
-};
-
-const setOfferformSubmit = () => {
-  formContainer.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    const isValid = pristine.validate();
-    if (isValid) {
-      blockSubmitButton();
-      sendData(() => {
-        unblockSubmitButton();
-        showSuccessMessage();
-        getData(resetForm, () => {showAlert('Ошибка.Обновите страницу!');});
-      },
-      () => {
-        unblockSubmitButton();
-        showErrMessage();
-      },
-      new FormData(formContainer),
-      );
-    }
-  });
 };
 
 noUiSlider.create(priceSlider, {
@@ -189,6 +151,48 @@ timeIn.addEventListener('change', () => {
 timeOut.addEventListener('change', () => {
   timeIn.value = timeOut.value;
 });
+
+const resetSlider = () => {
+  priceSlider.noUiSlider.updateOptions({
+    range: {
+      min: 0,
+      max: 100000,
+    },
+    start: 0,
+    step: 1000,
+  });
+};
+
+const resetForm = (offer) => {
+  formContainer.reset();
+  resetSlider();
+  resetPhoto();
+  resetFilters();
+  resetMap(offer);
+};
+
+const setOfferformSubmit = () => {
+  formContainer.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(() => {
+        unblockSubmitButton();
+        showSuccessMessage();
+        getData(resetForm, () => {showAlert('Ошибка.Обновите страницу!');});
+      },
+      () => {
+        unblockSubmitButton();
+        showErrMessage();
+      },
+      new FormData(formContainer),
+      );
+    }
+  });
+};
+
+resetButton.addEventListener('click', resetForm);
 
 export {addDisabled, setOfferformSubmit/*, resetForm*/};
 

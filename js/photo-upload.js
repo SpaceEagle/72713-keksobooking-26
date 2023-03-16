@@ -25,3 +25,13 @@ const createImg = (container) => {
 chooserAvatar.addEventListener('change', () => preparationPhoto(chooserAvatar, previewAvatar));
 
 choosePhotoHouse.addEventListener('change', () => preparationPhoto(choosePhotoHouse, createImg(previewPhotoHouse)));
+
+const resetPhoto = () => {
+  const photoImgElement = previewPhotoHouse.querySelector('img');
+  chooserAvatar.value = '';
+  choosePhotoHouse.value = '';
+  previewAvatar.src = 'img/muffin-grey.svg';
+  photoImgElement.src = '';
+};
+
+export {resetPhoto};

@@ -13,6 +13,7 @@ getData((newOffers) => {
   initMap(newOffers);
   activateFilter(newOffers);
   setOnFilterChange();
+  setOfferformSubmit();
 },
 () => {
   showAlert('Ошибка. Обновите страницу');

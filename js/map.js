@@ -64,10 +64,12 @@ const setOffersMarker = (offers) => {
 
 
 const resetMap = (offers) => {
+  formAddress.value = `${MAIN_MARKER_COORDINATE.lat}, ${MAIN_MARKER_COORDINATE.lng}`;
   getMap().setView(MAP_COORDINATES, MAP_ZOOM);
   mainMarker.setLatLng(MAIN_MARKER_COORDINATE);
   markersGroup.closePopup();
   markersGroup.clearLayers();
+  offers = offers.slice(0, ADS_NUMBERS);
   offers.forEach((offer) => setOffersMarker(offer));
 };
 
